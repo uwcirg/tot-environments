@@ -6,14 +6,15 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="robots" content="noindex, nofollow">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="font" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/fonts/bootstrap-icons.woff2?8d200481aa7f02a2d63a331fc782cfaf" type="font/woff2" crossorigin="anonymous">
     <#if properties.meta?has_content>
         <#list properties.meta?split(' ') as meta>
             <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
         </#list>
     </#if>
     <title>${msg("loginTitle",(realm.displayName!''))}</title>
-    <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
+    <link rel="icon" href="${url.resourcesPath}/img/${properties.favicon!}" />
     <#if properties.stylesCommon?has_content>
         <#list properties.stylesCommon?split(' ') as style>
             <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
@@ -38,7 +39,7 @@
 <body class="${properties.kcBodyClass!}">
     <div class="${properties.kcLoginClass!}">
         <header id="header">
-            <img src="${url.resourcesPath}/img/logo.svg" alt="Take on Transplant logo">
+            <img src="${url.resourcesPath}/img/${properties.logo!}" alt="Application Logo">
         </header>
         <div id="kc-header" class="${properties.kcHeaderClass!}">
             <div id="kc-header-wrapper" class="${properties.kcHeaderWrapperClass!}">
@@ -50,32 +51,35 @@
                 </#if>
             </div>
         </div>
-        <div class="${properties.kcFormCardClass!}">
+        <div id="kc-form-card" class="${properties.kcFormCardClass!}">
             <#if realm.internationalizationEnabled  && locale.supported?size gt 1>
                 <div class="${properties.kcLocaleMainClass!}" id="kc-locale">
-                    <div id="kc-locale-wrapper" class="${properties.kcLocaleWrapperClass!}">
-                        <div id="kc-locale-dropdown" class="${properties.kcLocaleDropDownClass!}">
-                            <a href="#" id="kc-current-locale-link">${locale.current}</a>
-                            <ul class="${properties.kcLocaleListClass!}">
-                                <#list locale.supported as l>
-                                    <li class="${properties.kcLocaleListItemClass!}">
-                                        <a class="${properties.kcLocaleItemClass!}" href="${l.url}">${l.label}</a>
-                                    </li>
-                                </#list>
-                            </ul>
-                        </div>
-                    </div>
+                    <select
+                        id="kc-current-locale-link"
+                        onchange="window.location.href=this.value"
+                        aria-label="Select language"
+                    >
+                        <#list locale.supported as l>
+                            <option
+                                value="${l.url}"
+                                <#if l.label == locale.current>selected</#if>
+                            >
+                                ${l.label}
+                            </option>
+                        </#list>
+                    </select>
                 </div>
             </#if>
             <#if !(auth?has_content && auth.showUsername() && !auth.showResetCredentials())>
                 <#if displayRequiredFields>
                     <div class="${properties.kcContentWrapperClass!}">
-                        <div class="${properties.kcLabelWrapperClass!} subtitle">
-                            <span class="subtitle"><span class="required">*</span> ${msg("requiredFields")}</span>
-                        </div>
                         <div class="col-md-10">
                             <h1 id="kc-page-title"><#nested "header"></h1>
                         </div>
+                        <div class="${properties.kcLabelWrapperClass!} subtitle">
+                            <span class="subtitle"><span class="required">*</span> ${msg("requiredFields")}</span>
+                        </div>
+                        <br>
                     </div>
                 <#else>
                     <h1 id="kc-page-title"><#nested "header"></h1>
@@ -129,6 +133,8 @@
                 </div>
             </#if>
 
+            <#nested "socialProviders">
+
             <#nested "form">
 
             <#if auth?has_content && auth.showTryAnotherWayLink()>
@@ -140,8 +146,6 @@
                     </div>
                 </form>
             </#if>
-
-            <#nested "socialProviders">
 
             <#if displayInfo>
                 <div id="kc-info" class="${properties.kcSignUpClass!}">

@@ -11,10 +11,6 @@
   <br>
   <form class="form-actions" action="${url.loginAction}" method="POST">
     <div id="kc-terms-text">
-    <#--
-      <#assign termsFileName = properties.termsFileName!"terms-text-default.html">
-      <#include termsFileName>
-      -->
       <div>${msg("termsText")?no_esc}</div>
       <div class="${properties.kcFormButtonsClass!} p-0">
           <label class="btn-checkbox ${properties.kcButtonClass!}" style="width: 100%">

@@ -44,12 +44,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T001 [US1] Remove the `shl-creator` service block from `base/docker-compose.yaml`
-- [ ] T002 [US1] Remove the `shl-server` service block from `base/docker-compose.yaml`
-- [ ] T003 [P] [US1] Remove the `shl-creator` service block from `dev/docker-compose.yaml`
-- [ ] T004 [P] [US1] Remove the `shl-server` service block from `dev/docker-compose.yaml`
-- [ ] T005 [P] [US1] Remove the `shl-creator` service block from `prod/docker-compose.yaml`
-- [ ] T006 [P] [US1] Remove the `shl-server` service block from `prod/docker-compose.yaml`
+- [x] T001 [US1] Remove the `shl-creator` service block from `base/docker-compose.yaml`
+- [x] T002 [US1] Remove the `shl-server` service block from `base/docker-compose.yaml`
+- [x] T003 [P] [US1] Remove the `shl-creator` service block from `dev/docker-compose.yaml`
+- [x] T004 [P] [US1] Remove the `shl-server` service block from `dev/docker-compose.yaml`
+- [x] T005 [P] [US1] Remove the `shl-creator` service block from `prod/docker-compose.yaml`
+- [x] T006 [P] [US1] Remove the `shl-server` service block from `prod/docker-compose.yaml`
 
 **Checkpoint**: At this point, deploying the environment should create zero SHL containers. All remaining services should still be defined correctly.
 
@@ -63,10 +63,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T007 [US2] Remove `SHL_MANAGER_URL` environment variable from the cpro service in `base/docker-compose.yaml`
-- [ ] T008 [US2] Remove `KEYCLOAK_SHL_CREATOR_BASE` and `KEYCLOAK_SHL_CREATOR_POST_LOGOUT_REDIRECT_URL` environment variables from the keycloak service in `base/docker-compose.yaml`
-- [ ] T009 [US2] Remove the TODO comment referencing shl-creator from the fhir-auth service labels in `base/docker-compose.yaml`
-- [ ] T010 [US2] Remove the `shl_creator` OIDC client object from the `clients` array in `base/config/keycloak/import/tot-realm.json`
+- [x] T007 [US2] Remove `SHL_MANAGER_URL` environment variable from the cpro service in `base/docker-compose.yaml`
+- [x] T008 [US2] Remove `KEYCLOAK_SHL_CREATOR_BASE` and `KEYCLOAK_SHL_CREATOR_POST_LOGOUT_REDIRECT_URL` environment variables from the keycloak service in `base/docker-compose.yaml`
+- [x] T009 [US2] Remove the TODO comment referencing shl-creator from the fhir-auth service labels in `base/docker-compose.yaml`
+- [x] T010 [US2] Remove the `shl_creator` OIDC client object from the `clients` array in `base/config/keycloak/import/tot-realm.json`
 
 **Checkpoint**: At this point, no remaining service references SHL components. Keycloak realm import no longer includes the shl_creator client.
 
@@ -80,11 +80,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T011 [P] [US3] Delete the file `dev/shl-creator.env.default`
-- [ ] T012 [P] [US3] Delete the file `prod/shl-creator.env.default`
-- [ ] T013 [P] [US3] Remove the `shl-server-data` volume definition from `dev/docker-compose.yaml`
-- [ ] T014 [P] [US3] Remove the `shl-server-data` volume definition from `prod/docker-compose.yaml`
-- [ ] T015 [US3] Remove any `SHL_CREATOR_IMAGE_TAG` or `SHL_SERVER_IMAGE_TAG` variable references from `base/docker-compose.yaml` (if present)
+- [x] T011 [P] [US3] Delete the file `dev/shl-creator.env.default`
+- [x] T012 [P] [US3] Delete the file `prod/shl-creator.env.default`
+- [x] T013 [P] [US3] Remove the `shl-server-data` volume definition from `dev/docker-compose.yaml`
+- [x] T014 [P] [US3] Remove the `shl-server-data` volume definition from `prod/docker-compose.yaml`
+- [x] T015 [US3] Remove any `SHL_CREATOR_IMAGE_TAG` or `SHL_SERVER_IMAGE_TAG` variable references from `base/docker-compose.yaml` (if present)
 
 **Checkpoint**: The entire project should now have zero references to SHL components in any active configuration file.
 
@@ -94,9 +94,9 @@
 
 **Purpose**: Final verification across all changes
 
-- [ ] T016 Run `docker compose config --quiet` validation in `dev/` directory to confirm valid compose configuration
-- [ ] T017 Run `docker compose config --quiet` validation in `prod/` directory to confirm valid compose configuration
-- [ ] T018 Run full grep sweep per quickstart.md: `grep -ri 'shl' base/ dev/ prod/ --include='*.yaml' --include='*.json' --include='*.default'` to confirm zero SHL references remain
+- [x] T016 Run `docker compose config --quiet` validation in `dev/` directory to confirm valid compose configuration
+- [x] T017 Run `docker compose config --quiet` validation in `prod/` directory to confirm valid compose configuration
+- [x] T018 Run full grep sweep per quickstart.md: `grep -ri 'shl' base/ dev/ prod/ --include='*.yaml' --include='*.json' --include='*.default'` to confirm zero SHL references remain
 
 ---
 

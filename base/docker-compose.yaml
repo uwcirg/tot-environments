@@ -7,7 +7,6 @@ services:
       SERVER_NAME: ${BASE_DOMAIN}
       HTTPS: "true"
       INSTANCE_ID: inform
-      SHL_MANAGER_URL: https://shl-creator.${BASE_DOMAIN}/share
       OIDC_CLIENT_ID: tot_cpro
       # Keycloak base URL; TODO discover OIDC config from .well-known/openid-configuration
       OIDC_AUTHZ_SERVER: https://keycloak.${BASE_DOMAIN}/realms/tot
@@ -149,8 +148,6 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
 
       KEYCLOAK_CPRO_BACKCHANNEL_LOGOUT_URL: https://${BASE_DOMAIN}/auth/oidc/logoutCallback
-      KEYCLOAK_SHL_CREATOR_BASE: https://shl-creator.${BASE_DOMAIN}
-      KEYCLOAK_SHL_CREATOR_POST_LOGOUT_REDIRECT_URL: https://${BASE_DOMAIN}/users
 
     volumes:
       - ./config/keycloak/import/:/opt/keycloak/data/import:ro
@@ -174,7 +171,6 @@ services:
       - traefik.http.routers.fhir-auth-${COMPOSE_PROJECT_NAME}.entrypoints=websecure
       - traefik.http.routers.fhir-auth-${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
 
-      # TODO review if necessary for shl-creator service in same deploy
       # add CORS middleware, configured to return `Access-Control-Allow-Origin: *`
       # NB accessControlAllowOrigin is deprecated, but not noted in docs
       # https://github.com/traefik/traefik/issues/8796
@@ -187,36 +183,3 @@ services:
       - ingress
       - internal
 
-  shl-creator:
-    image: ghcr.io/uwcirg/shl-tot:${SHL_CREATOR_IMAGE_TAG:-latest}
-    environment:
-      VITE_API_BASE: https://shl-server.${BASE_DOMAIN}/api
-      VITE_BACK_URL: https://${BASE_DOMAIN}/pro_reports/clinic_report_inform
-      VITE_SOF_ISS: https://fhir-auth.${BASE_DOMAIN}/fhir
-      VITE_OIDC_SERVER_BASE: https://keycloak.${BASE_DOMAIN}
-      VITE_OIDC_LOGOUT_ENDPOINT: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/logout
-      VITE_OIDC_CHECK_SESSION_IFRAME: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/login-status-iframe.html
-      VITE_POST_LOGOUT_REDIRECT_URI: https://${BASE_DOMAIN}/users
-      VITE_LOG_URL: https://shl-server.${BASE_DOMAIN}/api/log
-      VITE_SYSTEM_URL: https://shl-creator.${BASE_DOMAIN}
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.shl-creator-${COMPOSE_PROJECT_NAME}.rule=Host(`shl-creator.${BASE_DOMAIN}`)
-      - traefik.http.routers.shl-creator-${COMPOSE_PROJECT_NAME}.entrypoints=websecure
-      - traefik.http.routers.shl-creator-${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
-    networks:
-      - ingress
-
-  shl-server:
-    image: ghcr.io/uwcirg/shl-tot-server:${SHL_SERVER_IMAGE_TAG:-latest}
-    environment:
-      PUBLIC_URL: https://shl-server.${BASE_DOMAIN}
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.shl-server-${COMPOSE_PROJECT_NAME}.rule=Host(`shl-server.${BASE_DOMAIN}`)
-      - traefik.http.routers.shl-server-${COMPOSE_PROJECT_NAME}.entrypoints=websecure
-      - traefik.http.routers.shl-server-${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
-    volumes:
-      - shl-server-data:/app/db
-    networks:
-      - ingress

@@ -41,24 +41,11 @@ services:
     depends_on:
       - fhir
 
-  shl-creator:
-    extends:
-      file: ../base/docker-compose.yaml
-      service: shl-creator
-    env_file:
-      shl-creator.env
-
-  shl-server:
-    extends:
-      file: ../base/docker-compose.yaml
-      service: shl-server
-
 volumes:
   mysql-data: {}
   secure-data: {}
   db-data: {}
   tmp-data: {}
-  shl-server-data: {}
 networks:
   # internal network for backing services
   internal:

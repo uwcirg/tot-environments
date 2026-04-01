@@ -19,7 +19,7 @@
 
 **Purpose**: Establish baseline state before making changes
 
-- [ ] T001 Verify current Docker Compose configuration is valid by running `docker compose -f dev/docker-compose.yaml config` and `docker compose -f prod/docker-compose.yaml config`
+- [x] T001 Verify current Docker Compose configuration is valid by running `docker compose -f dev/docker-compose.yaml config` and `docker compose -f prod/docker-compose.yaml config`
 
 ---
 
@@ -39,12 +39,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T002 [US1] Remove `fhir` service block from base/docker-compose.yaml (lines 81–113)
-- [ ] T003 [US1] Remove `fhir-auth` service block from base/docker-compose.yaml (lines 159–184)
-- [ ] T004 [P] [US1] Remove `fhir` service block from dev/docker-compose.yaml (lines 21–34)
-- [ ] T005 [P] [US1] Remove `fhir-auth` service block from dev/docker-compose.yaml (lines 45–50)
-- [ ] T006 [P] [US1] Remove `fhir` service block from prod/docker-compose.yaml (lines 21–26)
-- [ ] T007 [P] [US1] Remove `fhir-auth` service block from prod/docker-compose.yaml (lines 37–42)
+- [x] T002 [US1] Remove `fhir` service block from base/docker-compose.yaml (lines 81–113)
+- [x] T003 [US1] Remove `fhir-auth` service block from base/docker-compose.yaml (lines 159–184)
+- [x] T004 [P] [US1] Remove `fhir` service block from dev/docker-compose.yaml (lines 21–34)
+- [x] T005 [P] [US1] Remove `fhir-auth` service block from dev/docker-compose.yaml (lines 45–50)
+- [x] T006 [P] [US1] Remove `fhir` service block from prod/docker-compose.yaml (lines 21–26)
+- [x] T007 [P] [US1] Remove `fhir-auth` service block from prod/docker-compose.yaml (lines 37–42)
 
 **Checkpoint**: No FHIR or fhir-auth service definitions exist in any Docker Compose file. Remaining services (cPRO, Keycloak, db, mysql) are unaffected.
 
@@ -58,7 +58,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T008 [US2] Remove `FHIR_R4_SERVER_ENDPOINT` and `FHIR_R4_EXTERNAL_ID_SYSTEM` environment variables (and associated comments) from the cPRO service in base/docker-compose.yaml (lines 17–20)
+- [x] T008 [US2] Remove `FHIR_R4_SERVER_ENDPOINT` and `FHIR_R4_EXTERNAL_ID_SYSTEM` environment variables (and associated comments) from the cPRO service in base/docker-compose.yaml (lines 17–20)
 
 **Checkpoint**: cPRO service definition contains no FHIR-related environment variables.
 
@@ -72,11 +72,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T009 [P] [US3] Remove `---- HAPI ----` comment and `create database hapifhir;` line from base/config/db/db.init.sql (lines 5–6)
-- [ ] T010 [P] [US3] Remove `patient/*.read` scope definition (lines 398–407) and `launch` scope definition (lines 409–419) from base/config/keycloak/import/tot-realm.json
-- [ ] T011 [US3] Remove `"launch"` and `"patient/*.read"` entries from `defaultOptionalClientScopes` array in base/config/keycloak/import/tot-realm.json (lines 794–795)
-- [ ] T012 [P] [US3] Delete dev/fhir-auth.env.default
-- [ ] T013 [P] [US3] Delete prod/fhir-auth.env.default
+- [x] T009 [P] [US3] Remove `---- HAPI ----` comment and `create database hapifhir;` line from base/config/db/db.init.sql (lines 5–6)
+- [x] T010 [P] [US3] Remove `patient/*.read` scope definition (lines 398–407) and `launch` scope definition (lines 409–419) from base/config/keycloak/import/tot-realm.json
+- [x] T011 [US3] Remove `"launch"` and `"patient/*.read"` entries from `defaultOptionalClientScopes` array in base/config/keycloak/import/tot-realm.json (lines 794–795)
+- [x] T012 [P] [US3] Delete dev/fhir-auth.env.default
+- [x] T013 [P] [US3] Delete prod/fhir-auth.env.default
 
 **Checkpoint**: No FHIR-related databases, scopes, or environment files remain. Fresh deployments create only the `keycloak` database.
 
@@ -86,10 +86,10 @@
 
 **Purpose**: Final validation across all changes
 
-- [ ] T014 Validate dev compose config by running `docker compose -f dev/docker-compose.yaml config`
-- [ ] T015 Validate prod compose config by running `docker compose -f prod/docker-compose.yaml config`
-- [ ] T016 Grep entire repository for `fhir` (case-insensitive) and confirm zero matches outside `specs/` directory
-- [ ] T017 Verify remaining services in compose output: cpro, mysql, db, keycloak (+ traefik from external)
+- [x] T014 Validate dev compose config by running `docker compose -f dev/docker-compose.yaml config`
+- [x] T015 Validate prod compose config by running `docker compose -f prod/docker-compose.yaml config`
+- [x] T016 Grep entire repository for `fhir` (case-insensitive) and confirm zero matches outside `specs/` directory
+- [x] T017 Verify remaining services in compose output: cpro, mysql, db, keycloak (+ traefik from external)
 
 ---
 

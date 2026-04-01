@@ -18,21 +18,6 @@ services:
       file: ../base/docker-compose.yaml
       service: db
 
-  fhir:
-    extends:
-      file: ../base/docker-compose.yaml
-      service: fhir
-    depends_on:
-      - db
-    # expose HAPI to internet
-    networks:
-      ingress:
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.fhir-${COMPOSE_PROJECT_NAME}.rule=Host(`fhir.${BASE_DOMAIN}`)
-      - traefik.http.routers.fhir-${COMPOSE_PROJECT_NAME}.entrypoints=websecure
-      - traefik.http.routers.fhir-${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
-
   keycloak:
     extends:
       file: ../base/docker-compose.yaml
@@ -41,13 +26,6 @@ services:
       - keycloak.env
     depends_on:
       - db
-
-  fhir-auth:
-    extends:
-      file: ../base/docker-compose.yaml
-      service: fhir-auth
-    depends_on:
-      - fhir
 
 volumes:
   mysql-data: {}

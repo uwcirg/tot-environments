@@ -14,10 +14,6 @@ services:
       OIDC_AUTHORIZATION_ENDPOINT: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/auth
       OIDC_TOKEN_ENDPOINT: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/token
       OIDC_USERINFO_ENDPOINT: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/userinfo
-      # TODO set to authenticated endpoint after jwt-proxy added
-      FHIR_R4_SERVER_ENDPOINT: http://fhir-internal:8080/fhir/
-      # This serves as both a switch to include a second FHIR 'identifier', and as the 'system' to use for it.
-      FHIR_R4_EXTERNAL_ID_SYSTEM: https://keycloak.tot.cirg.uw.edu
     # workaround hardcoded hostname for mysql
     # TODO make mysql hostname configurable
     entrypoint: sh
@@ -78,40 +74,6 @@ services:
       timeout: 5s
     networks:
       - internal
-  fhir:
-    image: hapiproject/hapi:${FHIR_IMAGE_TAG:-v7.6.0}
-    environment:
-      spring.datasource.url: jdbc:postgresql://db:5432/hapifhir
-      spring.datasource.username: postgres
-      spring.datasource.password: postgres
-      spring.datasource.driverClassName: org.postgresql.Driver
-      spring.jpa.properties.hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
-
-      hapi.fhir.bulk_export_enabled: "true"
-      hapi.fhir.bulk_import_enabled: "true"
-      # allow direct assignment of resource IDs in any format
-      hapi.fhir.client_id_strategy: ANY
-      # enable all endpoints for operational data
-      management.endpoints.web.exposure.include: "*"
-    volumes:
-      # docker image does not contain any appropriate HTTP client
-      # use busybox from host as `wget`
-      - /usr/bin/busybox:/usr/bin/wget:ro
-    healthcheck:
-      test:
-        - CMD
-        - wget
-        - --spider
-        - --quiet
-        - http://localhost:8080/actuator/health
-      start_period: 2m
-    networks:
-      internal:
-        aliases:
-          - fhir-internal
-    expose:
-      - 8080
-
   keycloak:
     # use tini as init
     init: true
@@ -152,33 +114,6 @@ services:
     volumes:
       - ./config/keycloak/import/:/opt/keycloak/data/import:ro
       - ./config/keycloak/themes/:/opt/keycloak/themes:ro
-    networks:
-      - ingress
-      - internal
-
-  fhir-auth:
-    image: ghcr.io/uwcirg/jwt-proxy:${PROXY_IMAGE_TAG:-latest}
-    environment:
-      UPSTREAM_SERVER: http://fhir-internal:8080
-      OIDC_AUTHORIZE_URL: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/auth
-      OIDC_TOKEN_URI: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/token
-      OIDC_TOKEN_INTROSPECTION_URI: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/token/introspect
-      JWKS_URL: https://keycloak.${BASE_DOMAIN}/realms/tot/protocol/openid-connect/certs
-      PATH_WHITELIST: /fhir/metadata,/fhir/.well-known/smart-configuration
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.fhir-auth-${COMPOSE_PROJECT_NAME}.rule=Host(`fhir-auth.${BASE_DOMAIN}`)
-      - traefik.http.routers.fhir-auth-${COMPOSE_PROJECT_NAME}.entrypoints=websecure
-      - traefik.http.routers.fhir-auth-${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
-
-      # add CORS middleware, configured to return `Access-Control-Allow-Origin: *`
-      # NB accessControlAllowOrigin is deprecated, but not noted in docs
-      # https://github.com/traefik/traefik/issues/8796
-      - traefik.http.middlewares.fhir-auth-${COMPOSE_PROJECT_NAME}-cors.headers.accessControlAllowOriginList=*
-      # allow all verbs used by FHIR REST
-      - traefik.http.middlewares.fhir-auth-${COMPOSE_PROJECT_NAME}-cors.headers.accessControlAllowMethods=HEAD,GET,OPTIONS,PATCH,POST,PUT,DELETE
-      - traefik.http.middlewares.fhir-auth-${COMPOSE_PROJECT_NAME}-cors.headers.accessControlAllowHeaders=Authorization,Origin,Content-Type,Accept,Cache-Control
-      - traefik.http.routers.fhir-auth-${COMPOSE_PROJECT_NAME}.middlewares=fhir-auth-${COMPOSE_PROJECT_NAME}-cors
     networks:
       - ingress
       - internal
